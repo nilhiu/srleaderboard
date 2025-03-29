@@ -1,0 +1,22 @@
+package component
+
+import "github.com/nilhiu/srleaderboard/internal/db/dto"
+import "fmt"
+
+templ Leaderboard(runs []dto.Run, curPage int, pages int) {
+	<div
+		id="leaderboard"
+		hx-get={ fmt.Sprintf("/api/runs?offset=%d&limit=5", (curPage-1)*5) }
+		hx-trigger="add-run from:body, every 15s"
+		hx-swap="outerHTML"
+		class="h-4/5 flex flex-col justify-around items-center"
+	>
+		<h1 class="text-white text-7xl">Best Runs</h1>
+		<div class="w-full h-3/5">
+			@RunBoard(runs, (curPage-1)*5)
+		</div>
+		if pages > 1 {
+			@Pagination("/api/runs?offset=%d&limit=5", curPage, pages)
+		}
+	</div>
+}

@@ -1,0 +1,10 @@
+package component
+
+templ Link(text, url string) {
+	<a
+		href={ templ.URL(url) }
+		target="_blank"
+		rel="noopener noreferrer"
+		class="w-3/7 text-center underline transition decoration-green hover:text-green hover:cursor-pointer"
+	>{ text }</a>
+}

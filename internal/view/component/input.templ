@@ -1,0 +1,8 @@
+package component
+
+templ Input(inpType, name, id, labelText string) {
+	<div class="mt-3 mb-3 p-3 flex justify-between border-black-400 border-1 rounded-md">
+		<label for={ id } class="w-4/13 content-center">{ labelText }</label>
+		<input type={ inpType } id={ id } name={ name } class="w-8/13 pt-1 pb-1 pl-2 pr-2 border-2 border-gray outline-none rounded-md transition-colors focus:border-green"/>
+	</div>
+}

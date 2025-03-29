@@ -1,0 +1,20 @@
+package page
+
+import "github.com/nilhiu/srleaderboard/internal/view/layout"
+
+templ MainPage() {
+	@layout.Base() {
+		<div
+			hx-get="/partials/navbar"
+			hx-target="this"
+			hx-trigger="load"
+			hx-swap="outerHTML"
+		></div>
+		<div
+			hx-get="/api/runs?offset=0&limit=5"
+			hx-target="this"
+			hx-trigger="load"
+			hx-swap="outerHTML"
+		></div>
+	}
+}

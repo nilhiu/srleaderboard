@@ -1,0 +1,9 @@
+package component
+
+templ Modal(xshow string) {
+	<div style="display: none;" x-show={ xshow } x-transition class="absolute top-0 left-0 w-full h-full flex justify-center items-center backdrop-blur-md">
+		<div x-ref={ xshow + "Modal" } x-on:click.outside={ xshow + " = false" } class="p-10 rounded-lg border-2 border-green bg-black-600 text-white">
+			{ children... }
+		</div>
+	</div>
+}

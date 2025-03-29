@@ -1,0 +1,14 @@
+package component
+
+import (
+	"strconv"
+	"time"
+)
+
+templ UserRunBoardItem(rank int, dur time.Duration, addedAt time.Time) {
+	<div class="w-full flex pt-4 pb-4 border-b-2 border-b-white justify-around text-white last:border-b-0">
+		<p class="w-1/7 text-center border-r-2 border-dashed">{ strconv.Itoa(rank) }</p>
+		<p class="w-3/7 text-center border-r-2  border-l-2 border-dashed">@Duration(dur)</p>
+		<p class="w-3/7 text-center border-l-2 border-dashed">{ addedAt.Format("2006-01-02 15:04") }</p>
+	</div>
+}

@@ -1,0 +1,24 @@
+package component
+
+templ AddRunForm() {
+	<div id="add-run-form">
+		@Form("Add Run", templ.Attributes{
+			"hx-post":    "/api/runs",
+			"hx-ext":     "json-enc",
+			"hx-target":  "#add-run-form",
+			"hx-swap":    "outerHTML",
+			"hx-include": "#run-time-input",
+			"x-on:click": "closeAll()",
+		}) {
+			<p class="mb-3 text-center">Enter the time in a <span class="block font-bold">1h2m3s4ms</span> format</p>
+			@ValidatedInput(ValidatedInputProps{
+				ID:             "run-time-input",
+				Input:          "text",
+				Name:           "time",
+				LabelText:      "Time",
+				ValidatorRoute: "/partials/validate/time",
+				Validity:       true,
+			})
+		}
+	</div>
+}

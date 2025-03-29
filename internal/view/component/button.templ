@@ -1,0 +1,10 @@
+package component
+
+templ Button(text string, attrs templ.Attributes) {
+	<button
+		{ attrs... }
+		class="w-full m-1 p-2 pl-8 pr-8 bg-green text-black rounded-lg shadow-lg transition-colors cursor-pointer hover:bg-green-800 hover:text-white"
+	>
+		{ text }
+	</button>
+}

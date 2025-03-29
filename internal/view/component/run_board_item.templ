@@ -1,0 +1,21 @@
+package component
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
+templ RunBoardItem(rank int, user string, dur time.Duration) {
+	<div class="w-full flex pt-4 pb-4 border-b-2 border-b-white justify-around text-white last:border-b-0">
+		<p class="w-1/7 text-center border-r-2 border-dashed">{ strconv.Itoa(rank) }</p>
+		<a
+			hx-get={ fmt.Sprintf("/api/runs/%s?offset=0&limit=5", user) }
+			hx-target="#leaderboard"
+			hx-swap="outerHTML"
+			hx-push-url={ "/runs/" + user }
+			class="w-3/7 text-center border-r-2 border-l-2 border-dashed underline decoration-transparent transition hover:decoration-green hover:text-green hover:cursor-pointer"
+		>{ user }</a>
+		<p class="w-3/7 text-center border-l-2 border-dashed">@Duration(dur)</p>
+	</div>
+}

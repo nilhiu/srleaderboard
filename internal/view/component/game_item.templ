@@ -1,0 +1,10 @@
+package component
+
+import "strconv"
+
+templ GameItem(title string, runAmt uint64) {
+	<button hx-get={ "/games/" + title } hx-target="#content" hx-push-url="true" class="w-1/4 ml-4 mr-4 p-4 flex flex-col justify-center items-center bg-black border-2 border-black-50 border-radius-lg transition-colors hover:cursor-pointer hover:bg-white hover:text-black">
+		<p>{ title }</p>
+		<p>{ strconv.FormatUint(runAmt, 10) } Runs</p>
+	</button>
+}

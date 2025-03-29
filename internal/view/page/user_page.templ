@@ -1,0 +1,21 @@
+package page
+
+import "github.com/nilhiu/srleaderboard/internal/view/layout"
+import "fmt"
+
+templ UserPage(user string) {
+	@layout.Base() {
+		<div
+			hx-get="/partials/navbar"
+			hx-target="this"
+			hx-trigger="load"
+			hx-swap="outerHTML"
+		></div>
+		<div
+			hx-get={ fmt.Sprintf("/api/runs/%s?offset=0&limit=5", user) }
+			hx-target="this"
+			hx-trigger="load"
+			hx-swap="outerHTML"
+		></div>
+	}
+}

@@ -1,0 +1,19 @@
+package component
+
+import (
+	"github.com/nilhiu/srleaderboard/internal/db/models"
+	"time"
+)
+
+templ UserRunBoard(runs []models.Run, offset int) {
+	<div class="w-2/5 m-auto bg-black flex flex-col rounded-xl shadow-2xl max-lg:w-4/5">
+		<div class="flex pt-4 pb-4 border-2 rounded-t-xl justify-around bg-black-400 text-green">
+			<p class="w-1/7 text-center border-r-2 border-dashed">N</p>
+			<p class="w-3/7 text-center border-r-2 border-l-2 border-dashed">Time</p>
+			<p class="w-3/7 text-center border-l-2 border-dashed">Date Added</p>
+		</div>
+		for i, run := range runs {
+			@UserRunBoardItem(offset+i+1, time.Duration(run.CompletionTime), run.CreatedAt)
+		}
+	</div>
+}

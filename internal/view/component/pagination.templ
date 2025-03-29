@@ -1,0 +1,66 @@
+package component
+
+import "strconv"
+import "fmt"
+
+templ Pagination(fmtRoute string, cur int, pages int) {
+	<nav>
+		<ul class="flex list-none text-white">
+			if cur != 1 {
+				<li>
+					<button
+						hx-get={ fmt.Sprintf(fmtRoute, (cur-2)*5) }
+						hx-target="#leaderboard"
+						hx-swap="outerHTML"
+						class="p-2 pl-3 pr-3 bg-black border-t-2 border-b-2 border-l-2 border-solid rounded-tl-md rounded-bl-md border-green hover:cursor-pointer hover:bg-green hover:text-black transition-color"
+					>Prev</button>
+				</li>
+			} else {
+				<li>
+					<button class="p-2 pl-3 pr-3 bg-black-600 border-t-2 border-b-2 border-l-2 border-solid rounded-tl-md rounded-bl-md border-green">
+						Prev
+					</button>
+				</li>
+			}
+			for i := max(1, cur - 3); i < cur; i++ {
+				<li>
+					<button
+						hx-get={ fmt.Sprintf(fmtRoute, (i-1)*5) }
+						hx-target="#leaderboard"
+						hx-swap="outerHTML"
+						class="p-2 pl-3 pr-3 bg-black border-t-2 border-b-2 border-solid border-green hover:cursor-pointer hover:bg-green hover:text-black transition-color"
+					>{ strconv.Itoa(i) }</button>
+				</li>
+			}
+			<li class="p-2 pl-3 pr-3 bg-green text-black border-solid border-black">
+				{ strconv.Itoa(cur) }
+			</li>
+			for i := cur + 1; i <= min(pages, cur + 3); i++ {
+				<li>
+					<button
+						hx-get={ fmt.Sprintf(fmtRoute, (i-1)*5) }
+						hx-target="#leaderboard"
+						hx-swap="outerHTML"
+						class="p-2 pl-3 pr-3 bg-black border-t-2 border-b-2 border-solid border-green hover:cursor-pointer hover:bg-green hover:text-black transition-color"
+					>{ strconv.Itoa(i) }</button>
+				</li>
+			}
+			if cur != pages {
+				<li>
+					<button
+						hx-get={ fmt.Sprintf(fmtRoute, cur*5) }
+						hx-target="#leaderboard"
+						hx-swap="outerHTML"
+						class="p-2 pl-3 pr-3 bg-black border-t-2 border-b-2 border-r-2 border-solid rounded-tr-md rounded-br-md border-green hover:cursor-pointer hover:bg-green hover:text-black transition-color"
+					>Next</button>
+				</li>
+			} else {
+				<li>
+					<button class="p-2 pl-3 pr-3 bg-black-600 border-t-2 border-b-2 border-r-2 border-solid rounded-tr-md rounded-br-md border-green">
+						Next
+					</button>
+				</li>
+			}
+		</ul>
+	</nav>
+}

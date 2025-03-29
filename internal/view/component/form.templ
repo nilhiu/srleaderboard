@@ -1,0 +1,9 @@
+package component
+
+templ Form(btnText string, btnAttrs templ.Attributes) {
+	<div class=" flex flex-col justify-center">
+		{ children... }
+		<div class="m-3"></div>
+		@Button(btnText, btnAttrs)
+	</div>
+}

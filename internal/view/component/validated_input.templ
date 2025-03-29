@@ -1,0 +1,28 @@
+package component
+
+type ValidatedInputProps struct {
+	ID             string
+	Input          string
+	Name           string
+	LabelText      string
+	ValidatorRoute string
+	Validity       bool
+	InvalidMessage string
+	Value          string
+}
+
+templ ValidatedInput(p ValidatedInputProps) {
+	<div hx-target="this" hx-swap="outerHTML">
+		<div class="mt-3 mb-3 p-3 flex justify-between border-black-400 border-1 rounded-md">
+			<label for={ p.ID } class="w-4/13 content-center">{ p.LabelText }</label>
+			if p.Validity {
+				<input hx-post={ p.ValidatorRoute } hx-ext="json-enc" type={ p.Input } id={ p.ID } name={ p.Name } value={ p.Value } class="w-8/13 pt-1 pb-1 pl-2 pr-2 border-2 border-gray outline-none rounded-md transition-colors focus:border-green"/>
+			} else {
+				<input hx-post={ p.ValidatorRoute } hx-ext="json-enc" type={ p.Input } id={ p.ID } name={ p.Name } value={ p.Value } class="w-8/13 pt-1 pb-1 pl-2 pr-2 border-2 border-red outline-none rounded-md transition-colors focus:border-green"/>
+			}
+		</div>
+		if !p.Validity {
+			<p class="text-red">{ p.InvalidMessage }</p>
+		}
+	</div>
+}

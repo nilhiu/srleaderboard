@@ -1,0 +1,12 @@
+package component
+
+templ LoginForm() {
+	@Form("Login", templ.Attributes{
+		"hx-post":    "/api/auth/login",
+		"hx-ext":     "json-enc",
+		"hx-include": "#login-username-input, #login-password-input",
+	}) {
+		@Input("text", "username", "login-username-input", "Username")
+		@Input("password", "password", "login-password-input", "Password")
+	}
+}

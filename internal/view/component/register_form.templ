@@ -1,0 +1,15 @@
+package component
+
+templ RegisterForm() {
+	@Form("Register", templ.Attributes{
+		"hx-post":    "/api/auth/register",
+		"hx-ext":     "json-enc",
+		"hx-target":  "#navbar",
+		"hx-swap":    "outerHTML",
+		"hx-include": "#register-username-input, #register-email-input, #register-password-input",
+	}) {
+		@Input("text", "username", "register-username-input", "Username")
+		@Input("email", "email", "register-email-input", "Email")
+		@Input("password", "password", "register-password-input", "Password")
+	}
+}

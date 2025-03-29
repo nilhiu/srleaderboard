@@ -1,0 +1,28 @@
+package component
+
+import (
+	"fmt"
+	"github.com/nilhiu/srleaderboard/internal/db/models"
+)
+
+templ UserBoard(username string, runs []models.Run, curPage int, pages int) {
+	<div
+		id="leaderboard"
+		hx-get={ fmt.Sprintf("/api/runs/%s?offset=%d&limit=5", username, (curPage-1)*5) }
+		hx-trigger="add-run from:body"
+		hx-swap="outerHTML"
+		class="h-4/5 flex flex-col justify-around items-center"
+	>
+		<h1 class="text-white text-7xl max-md:text-3xl">{ username }&#39s Runs</h1>
+		<div class="w-full h-3/5">
+			@UserRunBoard(runs, (curPage-1)*5)
+		</div>
+		if pages > 1 {
+			@Pagination(
+				fmt.Sprintf("/api/runs/%s?offset=%%d&limit=5", username),
+				curPage,
+				pages,
+			)
+		}
+	</div>
+}

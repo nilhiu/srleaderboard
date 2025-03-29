@@ -1,0 +1,31 @@
+services:
+  srleaderboard:
+    restart: on-failure:5
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:17.4
+    restart: always
+    shm_size: 128mb
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7.4.2
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    ports:
+      - 6379:6379
+    env_file:
+      - .env

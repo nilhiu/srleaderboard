@@ -1,0 +1,58 @@
+package component
+
+type AlertType int
+
+const (
+	AlertOK AlertType = iota
+	AlertError
+)
+
+templ Alert(t AlertType) {
+	<div
+		x-data="{
+          msg: '',
+          show: false,
+
+          async showAlert(message) {
+            this.msg = message
+            this.show = true
+
+            await new Promise(r => setTimeout(r, 3000))
+
+            this.show = false
+          }
+        }"
+		class="absolute top-20 w-full"
+	>
+		switch t {
+			case AlertOK:
+				<div
+					x-on:show-alert-ok="showAlert($event.detail.message)"
+					x-show="show"
+					x-transition:enter="transition ease-out duration-300"
+					x-transition:enter-start="-translate-y-20 opacity-0 scale-90"
+					x-transition:enter-end="translate-y-0 opacity-100 scale-100"
+					x-transition:leave="transition ease-in duration-300"
+					x-transition:leave-start="translate-y-0 opacity-100 scale-100"
+					x-transition:leave-end="-translate-y-20 opacity-0 scale-90"
+					id="alert-ok"
+				>
+					<p x-text="msg" class="pt-3 pb-3 pl-10 pr-10 w-max m-auto bg-green text-black border-green-800 border-3 rounded-full"></p>
+				</div>
+			case AlertError:
+				<div
+					x-on:show-alert-error="showAlert($event.detail.message)"
+					x-show="show"
+					x-transition:enter="transition ease-out duration-300"
+					x-transition:enter-start="-translate-y-20 opacity-0 scale-90"
+					x-transition:enter-end="translate-y-0 opacity-100 scale-100"
+					x-transition:leave="transition ease-in duration-300"
+					x-transition:leave-start="translate-y-0 opacity-100 scale-100"
+					x-transition:leave-end="-translate-y-20 opacity-0 scale-90"
+					id="alert-error"
+				>
+					<p x-text="msg" class="pt-3 pb-3 pl-10 pr-10 w-max m-auto bg-red text-black border-red-800 border-3 rounded-full"></p>
+				</div>
+		}
+	</div>
+}

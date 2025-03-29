@@ -1,0 +1,9 @@
+package component
+
+templ LogoutForm() {
+	@Form("Yes", templ.Attributes{
+		"hx-post": "/api/logout",
+	}) {
+		<p>Are you sure you wan't to log out?</p>
+	}
+}

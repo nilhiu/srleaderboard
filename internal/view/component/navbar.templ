@@ -1,0 +1,132 @@
+package component
+
+templ Navbar(auth bool) {
+	<nav
+		id="navbar"
+		hx-get="/partials/navbar"
+		hx-target="this"
+		hx-trigger="auth"
+		hx-swap="outerHTML"
+		class="w-9/10 h-max mt-4 pt-2 pb-2 ml-auto mr-auto bg-black rounded-xl shadow-2xl max-lg:p-0"
+		x-data="{
+            openAddRun: false,
+            openRegister: false,
+            openLogin: false,
+            openLogout: false,
+            openAbout: false,
+            openMobileMenu: false,
+
+            closeAll() {
+                this.openAddRun = false
+                this.openRegister = false
+                this.openLogin = false
+                this.openLogout = false
+                this.openAbout = false
+                this.openMobileMenu = false
+            }
+        }"
+		x-on:keydown.escape.prevent.stop="closeAll()"
+	>
+		<div class="w-4/5 h-full m-auto flex justify-between max-lg:w-full">
+			<a
+				hx-get="/api/runs?offset=0&limit=5"
+				hx-target="#leaderboard"
+				hx-swap="outerHTML"
+				hx-push-url="/"
+				class="text-xl text-white content-center underline decoration-transparent transition hover:text-green hover:decoration-green hover:cursor-pointer max-lg:pl-10"
+			>SRLeaderboard</a>
+			<div class="text-nowrap flex justify-end max-lg:hidden">
+				@navbarItems(auth)
+			</div>
+			@mobileNavbar(auth)
+		</div>
+		@navbarModals(auth)
+	</nav>
+}
+
+templ navbarItems(auth bool) {
+	if auth {
+		@Button("Add Run", templ.Attributes{
+			"x-on:click": "closeAll(); openAddRun = true",
+		})
+		@Button("Profile", templ.Attributes{
+			"hx-get":      "/profile",
+			"hx-target":   "#leaderboard",
+			"hx-swap":     "outerHTML",
+			"hx-push-url": "/profile",
+			"x-on:click":  "closeAll()",
+		})
+		@Button("Log Out", templ.Attributes{
+			"x-on:click": "closeAll(); openLogout = true",
+		})
+	} else {
+		@Button("Register", templ.Attributes{
+			"x-on:click": "closeAll(); openRegister = true",
+		})
+		@Button("Login", templ.Attributes{
+			"x-on:click": "closeAll(); openLogin = true",
+		})
+	}
+	@Button("About", templ.Attributes{
+		"x-on:click": "closeAll(); openAbout = true",
+	})
+}
+
+templ navbarModals(auth bool) {
+	if auth {
+		@Modal("openAddRun") {
+			@AddRunForm()
+		}
+		@Modal("openLogout") {
+			@LogoutForm()
+		}
+	} else {
+		@Modal("openRegister") {
+			@RegisterForm()
+		}
+		@Modal("openLogin") {
+			@LoginForm()
+		}
+	}
+	@Modal("openAbout") {
+		<div class="text-center flex flex-col justify-around items-center">
+			<h1 class="mb-8 text-4xl">SRLeaderboard</h1>
+			<p class="text-lg mb-3">
+				SRLeaderboard is a small (single-page) web application that keeps
+				track of completion times of &quot;speedruns&quot;
+			</p>
+			<p class="text-lg mb-3">
+				It uses Templ, HTMX, Alpine.js and TailwindCSS on the frontend, and
+				uses Go, PostgreSQL and Redis on the backend
+			</p>
+			<p class="text-lg">
+				You can view the source code&nbsp;
+				@Link("here", "https://github.com/nilhiu/srleaderboard")
+				.
+			</p>
+		</div>
+	}
+}
+
+templ mobileNavbar(auth bool) {
+	<div
+		class="lg:hidden"
+	>
+		<button
+			x-on:click="openMobileMenu = true"
+			class="p-4 pl-10 pr-10 bg-green text-black rounded-tr-lg rounded-br-lg shadow-lg transition-colors cursor-pointer hover:bg-green-800 hover:text-white"
+		>
+			Menu
+		</button>
+		<div
+			style="display: none"
+			x-show="openMobileMenu"
+			x-transition
+			class="absolute top-0 left-0 w-full h-full flex justify-end items-end backdrop-blur-md"
+		>
+			@Modal("openMobileMenu") {
+				@navbarItems(auth)
+			}
+		</div>
+	</div>
+}
