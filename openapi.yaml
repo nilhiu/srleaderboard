@@ -1,0 +1,341 @@
+openapi: 3.1.1
+servers:
+  - url: http://localhost/api
+info:
+  version: 1.0.0
+  title: SRLeaderboard API
+  description: OAS for SRLeaderboard's API
+  license:
+    name: BSD 3-Clause
+    url: https://opensource.org/license/bsd-3-clause
+tags:
+  - name: runs
+    description: Runs Management
+  - name: user
+    description: User Management
+  - name: auth
+    description: Authentication
+paths:
+  /runs:
+    get:
+      summary: Get runs from the leaderboard
+      operationId: GetRuns
+      security: []
+      tags:
+        - runs
+      parameters:
+        - $ref: "#/components/parameters/OffsetParam"
+        - $ref: "#/components/parameters/LimitParam"
+      responses:
+        "200":
+          description: Successfully returned the requested runs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRunsResponse"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+    post:
+      summary: Add a run to the leaderboard and user database
+      operationId: AddRun
+      security:
+        - CookieSecurity: []
+      tags:
+        - runs
+        - user
+      requestBody:
+        description: The information about the run
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddRunRequest"
+      responses:
+        "201":
+          description: Successfully added the run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddRunResponse"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /runs/{user}:
+    get:
+      summary: Get user specific runs
+      operationId: GetUserRuns
+      security: []
+      tags:
+        - runs
+        - user
+      parameters:
+        - $ref: "#/components/parameters/UserParam"
+        - $ref: "#/components/parameters/OffsetParam"
+        - $ref: "#/components/parameters/LimitParam"
+      responses:
+        "200":
+          description: Successfully returned the requested runs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserRunsResponse"
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "404":
+          $ref: "#/components/responses/404NotFound"
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /auth/login:
+    post:
+      summary: Authenticate a registered user
+      operationId: Login
+      security: []
+      tags:
+        - user
+        - auth
+      requestBody:
+        description: The login form
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Successfully authenticated the user
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                format: jwt
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+  /auth/register:
+    post:
+      summary: Register a user
+      operationId: Register
+      security: []
+      tags:
+        - user
+        - auth
+      requestBody:
+        description: The registration form
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: Successfully registered the user
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                format: jwt
+        "400":
+          $ref: "#/components/responses/400BadRequest"
+        "409":
+          description: Failed to register the user as the username already exists
+        "500":
+          $ref: "#/components/responses/500InternalServerError"
+  /auth/logout:
+    post:
+      summary: Log the user out
+      operationId: Logout
+      security:
+        - CookieSecurity: []
+      tags:
+        - user
+        - auth
+      responses:
+        "204":
+          description: Successfully logged the user out
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    AddRunRequest:
+      type: object
+      required:
+        - time
+      properties:
+        time:
+          $ref: "#/components/schemas/Duration"
+
+    AddRunResponse:
+      type: object
+      required:
+        - username
+        - placement
+        - time
+        - date_added
+      properties:
+        username:
+          type: string
+        placement:
+          type: integer
+          format: int64
+        time:
+          $ref: "#/components/schemas/Duration"
+        date_added:
+          type: string
+          format: date-time
+
+    GetRunsResponse:
+      type: object
+      required:
+        - runs
+        - amount
+        - offset
+        - limit
+        - full_amount
+      properties:
+        runs:
+          type: array
+          items:
+            $ref: "#/components/schemas/LeaderboardRun"
+        amount:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+        full_amount:
+          type: integer
+
+    GetUserRunsResponse:
+      type: object
+      required:
+        - runs
+        - amount
+        - offset
+        - limit
+        - full_amount
+      properties:
+        runs:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRun"
+        amount:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+        full_amount:
+          type: integer
+
+    LeaderboardRun:
+      type: object
+      required:
+        - username
+        - completion_time
+      properties:
+        username:
+          type: string
+        completion_time:
+          type: integer
+          format: int64
+
+    UserRun:
+      type: object
+      required:
+        - id
+        - completion_time
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        completion_time:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+
+    Duration:
+      type: string
+      example: "1h2m3s400ms"
+
+  securitySchemes:
+    CookieSecurity:
+      type: apiKey
+      in: cookie
+      name: jwt
+
+  parameters:
+    UserParam:
+      in: path
+      name: user
+      description: The user for which to return the data about
+      required: true
+      schema:
+        type: string
+
+    OffsetParam:
+      in: query
+      name: offset
+      description: The number of runs to skip before collecting the resulting list
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+    LimitParam:
+      in: query
+      name: limit
+      description: The number of runs to return
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 5
+
+  responses:
+    400BadRequest:
+      description: The request couldn't be processed due to client error
+
+    401Unauthorized:
+      description: The user is unauthorized to make the request
+
+    404NotFound:
+      description: The specified resource couldn't be found
+
+    500InternalServerError:
+      description: The server failed internally to process the request

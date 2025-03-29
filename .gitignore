@@ -19,6 +19,8 @@
 !package.json
 !package-lock.json
 !tailwind.config.js
+!openapi.yaml
+!API.md
 
 !*/
 
